@@ -13,7 +13,6 @@ interface IQuestion {
   author_nickname: string;
   created_at: string;
   upvotes: number;
-  image: string | null; 
   answers: {
     answer_id: string;
     author_nickname: string;
@@ -21,7 +20,9 @@ interface IQuestion {
     content: string;
     upvotes: number;
   }[];
+  image: string | null; // 이미지가 null일 수 있음을 명시
 }
+
 const QnaSection = () => {
   const [qnaList, setQnaList] = useState<IQuestion[]>([]);
   const { nickname, isNickname } = useNickname();
@@ -35,6 +36,7 @@ const QnaSection = () => {
     }
   };
 
+  // 모달 닫기 함수
   const closeModal = () => {
     setModalImage(null);
   };
@@ -46,50 +48,50 @@ const QnaSection = () => {
       );
       const qnaData = await response.json();
       console.log(qnaData);
-            // Base64 이미지 디코딩
-            const qnaListWithImages = qnaData.questions.map((question: IQuestion) => {
-              // 이미지가 null이 아닐 때만 디코딩
-              if (question.image) {
-                return {
-                  ...question,
-                  // 이미지 Base64 디코딩
-                  image: `data:image/png;base64,${question.image}`,
-                };
-              }
-              return question;
-            });
-      
-            setQnaList(qnaListWithImages);
+
+      // Base64 이미지 디코딩
+      const qnaListWithImages = qnaData.questions.map((question: IQuestion) => {
+        // 이미지가 null이 아닐 때만 디코딩
+        if (question.image) {
+          return {
+            ...question,
+            // 이미지 Base64 디코딩
+            image: `data:image/png;base64,${question.image}`,
+          };
+        }
+        return question;
+      });
+
+      setQnaList(qnaListWithImages);
     } catch (error) {
-      return "Please check your server";
+      throw new Error("Please check your server"); // 오류를 throw하도록 수정
     }
   }
 
   useEffect(() => {
     getQnaData();
   }, [searchDate]);
+
   return (
     <>
       <Accordion selectionMode="multiple">
         {qnaList.map((question) => (
           <AccordionItem
             key={question.question_id}
-            aria-label="Question 1"
+            aria-label={`Question ${question.question_id}`}
             title={
               <div className="flex flex-row justify-between">
-                <p>{question.title}</p>
-                {question.image && (
+                <div>
+                  <p>{question.title}</p>
+                  {question.image && (
                     <img
                       src={question.image} // 이미지가 null이 아닐 때만 이미지 표시
                       alt="Question Image"
-                      style={{
-                        maxWidth: "100px",
-                        maxHeight: "100px",
-                        cursor: "pointer",
-                      }} // Adjust size as needed
+                      style={{ maxWidth: "100px", maxHeight: "100px", cursor: "pointer" }} // Adjust size as needed
                       onClick={() => openModal(question.image)} // 이미지 클릭 시 모달 열기
                     />
                   )}
+                </div>
                 <div className="flex flex-row gap-3">
                   <Chip color="warning" variant="flat">
                     {question.author_nickname}
@@ -129,6 +131,8 @@ const QnaSection = () => {
           </AccordionItem>
         ))}
       </Accordion>
+
+      {/* 이미지를 표시할 모달 팝업 */}
       {modalImage && (
         <div className="modal">
           <div className="modal-content">
