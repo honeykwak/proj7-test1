@@ -40,7 +40,7 @@ const NicknameButton = () => {
         </Button>
       ) : (
         <Chip size="lg" color="primary" variant="flat">
-           별명 {nickname}
+          닉네임 {nickname}
         </Chip>
       )}
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center">
