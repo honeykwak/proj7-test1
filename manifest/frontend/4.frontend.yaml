@@ -16,7 +16,7 @@ spec:
         app: frontend
     spec:
       containers:
-        - image: honeykwak/docker-qna-frontend:2.0
+        - image: honeykwak/docker-qna-frontend:0.0
           name: front
           volumeMounts:
             - mountPath: /etc/localtime
