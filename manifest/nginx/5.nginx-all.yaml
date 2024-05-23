@@ -2,7 +2,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: default  # 네임스페이스 추가
   labels:
     app: nginx
   name: nginx
@@ -26,7 +25,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: default  # 네임스페이스 추가
   labels:
     app: nginx
   name: nginx
