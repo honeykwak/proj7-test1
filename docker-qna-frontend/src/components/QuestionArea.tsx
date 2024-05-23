@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useDateInfo, useNickname } from "@/app/providers";
 import {
   Button,
   Textarea,
@@ -10,17 +10,17 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@nextui-org/react";
-import { useDateInfo, useNickname } from "@/app/providers";
+import React, { useState, useEffect } from "react";
 
 const QuestionArea = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [question, setQuestion] = useState("");
+  const { today } = useDateInfo();
+  const { nickname, isNickname } = useNickname();
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<
     { file: File; url: string }[]
   >([]);
-  const { today } = useDateInfo();
-  const { nickname, isNickname } = useNickname();
 
   useEffect(() => {
     return () => {
@@ -41,14 +41,12 @@ const QuestionArea = () => {
         });
       })
     );
-
     const userQuestion = {
       title: question,
       author_nickname: nickname,
       date: today,
       images: imageBase64Array,
     };
-
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/qna/addQuestion/`,
@@ -65,7 +63,7 @@ const QuestionArea = () => {
         setQuestion("");
         setImages([]);
         setImagePreviews([]);
-        window.location.reload(); // 바로 페이지 새로고침
+        window.location.reload(); 
       }
     } catch (error) {
       console.log(error);
@@ -114,30 +112,33 @@ const QuestionArea = () => {
       <Button
         color="primary"
         variant="ghost"
-        disabled={isNickname}
+        isDisabled={isNickname}
         onPress={onOpen}
       >
         질문하기
       </Button>
-      <Modal isOpen={isOpen} onClose={handleCloseModal} placement="top-center">
+      <Modal isOpen={isOpen} onClose={handleCloseModal} onOpenChange={onOpenChange} placement="top-center">
         <ModalContent>
-          <ModalHeader className="flex flex-col gap-1">질문</ModalHeader>
-          <ModalBody>
-            <Textarea
-              autoFocus
-              label="Question"
-              placeholder="질문을 입력하세요"
-              variant="bordered"
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-            />
-            <input
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">질문</ModalHeader>
+              <ModalBody>
+                <Textarea
+                  autoFocus
+                  label="Question"
+                  placeholder="질문을 입력하세요"
+                  variant="bordered"
+                  onChange={(e) => {
+                    setQuestion((prev) => e.target.value);
+                  }}
+                />
+                 <input
               type="file"
               accept="image/*"
               multiple
               onChange={handleImageUpload}
             />
-            <div
+             <div
               className="image-previews"
               style={{ display: "flex", flexWrap: "wrap" }}
             >
@@ -185,15 +186,21 @@ const QuestionArea = () => {
                 </div>
               ))}
             </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button color="danger" variant="flat" onClick={handleCloseModal}>
-              닫기
-            </Button>
-            <Button color="primary" onClick={handleSubmit}>
-              등록
-            </Button>
-          </ModalFooter>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="flat" onPress={onClose}>
+                  Close
+                </Button>
+                <Button
+                  color="primary"
+                  onClick={() => postQuestion()}
+                  onPress={onClose}
+                >
+                  접속
+                </Button>
+              </ModalFooter>
+            </>
+          )}
         </ModalContent>
       </Modal>
     </>

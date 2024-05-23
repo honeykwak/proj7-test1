@@ -29,7 +29,6 @@ const CommentArea = ({ disabled, nickname, question_id, today }: IComment) => {
       );
       if (res.ok) {
         console.log("질문 등록 완료");
-        window.location.reload();
       }
     } catch (error) {
       console.log(error);
