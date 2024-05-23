@@ -3,7 +3,7 @@ name: Update Manifest on Develop Change
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   detect-and-deploy:
@@ -75,5 +75,5 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git add manifest/frontend/4.frontend.yaml manifest/backend/3.backend.yaml
           git commit -m "Update Docker images in manifest files"
-          git push origin main
+          git push origin master
 
