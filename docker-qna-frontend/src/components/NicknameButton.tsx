@@ -36,7 +36,7 @@ const NicknameButton = () => {
     <>
       {isNickname ? (
         <Button onPress={onOpen} color="primary" href="#" variant="flat">
-          질문할래
+          질문하세요
         </Button>
       ) : (
         <Chip size="lg" color="primary" variant="flat">
