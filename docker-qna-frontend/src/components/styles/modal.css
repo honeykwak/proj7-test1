@@ -1,0 +1,61 @@
+/* 모달을 감싸는 요소에 대한 스타일 */
+.modal {
+  display: block; /* 모달을 표시할 때 사용 (처음에는 display: none) */
+  position: fixed; /* 고정 위치로 설정하여 스크롤과 상관없이 모달을 표시 */
+  z-index: 9999; /* 다른 요소들 위에 모달을 표시하기 위해 z-index 설정 */
+  left: 0;
+  top: 0;
+  width: 100%; /* 화면 전체 너비를 차지 */
+  height: 100%; /* 화면 전체 높이를 차지 */
+  overflow: auto; /* 모달이 화면을 벗어날 경우 스크롤 가능하도록 설정 */
+  background-color: rgba(0, 0, 0, 0.5); /* 배경에 반투명한 검은색 레이어 생성 */
+  display: flex; /* 모달을 중앙에 배치하기 위해 flex 사용 */
+  justify-content: center; /* 가로 중앙 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+}
+
+/* 모달 내용에 대한 스타일 */
+.modal-content {
+  background-color: #fefefe; /* 모달 내용의 배경색 */
+  margin: auto; /* 중앙 정렬 */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 90%; /* 모달 내용의 너비 */
+  max-width: 800px; /* 최대 너비 설정 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
+  animation: fadeIn 0.3s; /* 페이드 인 애니메이션 */
+}
+
+/* 모달 내용 내의 이미지에 대한 스타일 */
+.modal-content img {
+  width: 100%; /* 이미지의 너비를 부모 요소에 맞추어 설정 */
+  height: auto; /* 이미지의 높이를 비율에 맞추어 자동으로 설정 */
+  max-width: 100%; /* 이미지의 최대 너비를 부모 요소의 100%로 설정 */
+  max-height: 80vh; /* 이미지의 최대 높이를 화면 높이의 80%로 설정 */
+  object-fit: contain; /* 이미지가 비율을 유지하면서 잘리지 않도록 설정 */
+}
+
+/* 닫기 버튼에 대한 스타일 */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* 페이드 인 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
