@@ -13,6 +13,7 @@ interface IQuestion {
   author_nickname: string;
   created_at: string;
   upvotes: number;
+  image: string | null; 
   answers: {
     answer_id: string;
     author_nickname: string;
@@ -25,6 +26,18 @@ const QnaSection = () => {
   const [qnaList, setQnaList] = useState<IQuestion[]>([]);
   const { nickname, isNickname } = useNickname();
   const { searchDate, today } = useDateInfo();
+  const [modalImage, setModalImage] = useState<string | null>(null); // 모달에 표시할 이미지 주소를 저장하는 state
+
+  // 이미지 클릭 시 모달 열기 함수
+  const openModal = (imageUrl: string | null) => {
+    if (imageUrl) {
+      setModalImage(imageUrl);
+    }
+  };
+
+  const closeModal = () => {
+    setModalImage(null);
+  };
 
   async function getQnaData() {
     try {
@@ -33,7 +46,20 @@ const QnaSection = () => {
       );
       const qnaData = await response.json();
       console.log(qnaData);
-      setQnaList(qnaData.questions);
+            // Base64 이미지 디코딩
+            const qnaListWithImages = qnaData.questions.map((question: IQuestion) => {
+              // 이미지가 null이 아닐 때만 디코딩
+              if (question.image) {
+                return {
+                  ...question,
+                  // 이미지 Base64 디코딩
+                  image: `data:image/png;base64,${question.image}`,
+                };
+              }
+              return question;
+            });
+      
+            setQnaList(qnaListWithImages);
     } catch (error) {
       return "Please check your server";
     }
@@ -52,6 +78,18 @@ const QnaSection = () => {
             title={
               <div className="flex flex-row justify-between">
                 <p>{question.title}</p>
+                {question.image && (
+                    <img
+                      src={question.image} // 이미지가 null이 아닐 때만 이미지 표시
+                      alt="Question Image"
+                      style={{
+                        maxWidth: "100px",
+                        maxHeight: "100px",
+                        cursor: "pointer",
+                      }} // Adjust size as needed
+                      onClick={() => openModal(question.image)} // 이미지 클릭 시 모달 열기
+                    />
+                  )}
                 <div className="flex flex-row gap-3">
                   <Chip color="warning" variant="flat">
                     {question.author_nickname}
@@ -91,6 +129,17 @@ const QnaSection = () => {
           </AccordionItem>
         ))}
       </Accordion>
+      {modalImage && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={closeModal}>
+              &times;
+            </span>
+            {/* 모달에 이미지 표시 */}
+            <img src={modalImage} alt="Question Image" />
+          </div>
+        </div>
+      )}
     </>
   );
 };

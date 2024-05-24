@@ -15,7 +15,7 @@ const Navigation = () => {
       <Navbar position="static">
         <NavbarBrand>
           <Link href="/">
-            <p className="font-bold text-inherit">Cloud School Q&A</p>
+            <p className="font-bold text-inherit">1조의 서글픈 Q&A</p>
           </Link>
         </NavbarBrand>
 
